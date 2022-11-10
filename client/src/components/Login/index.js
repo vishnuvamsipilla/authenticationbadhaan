@@ -6,8 +6,7 @@ import Cookies from "js-cookie";
 
 const Login = () => {
   const [showPassword, toggleShowPassword] = useState(false);
-  // const [showCPassword, toggleShowCPassword] = useState(false);
-  // const [showError, toggleError] = useState(false);
+
   const [inputDetails, updateInput] = useState({
     email: "",
     password: "",

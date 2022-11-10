@@ -12,34 +12,6 @@ const uuidv4 = uuid.v4;
 
 const app = express();
 
-// const whitelist = [
-//   "http://localhost:3000",
-//   "http://localhost:8080",
-//   "https://shrouded-journey-38552.herokuapp.com",
-// ];
-
-// const corsOptions = {
-//   origin: function (origin, callback) {
-//     console.log("** Origin of request " + origin);
-//     if (whitelist.indexOf(origin) !== -1 || !origin) {
-//       console.log("Origin acceptable");
-//       callback(null, true);
-//     } else {
-//       console.log("Origin rejected");
-//       callback(new Error("Not allowed by CORS"));
-//     }
-//   },
-// };
-
-// if (process.env.NODE_ENV === "production") {
-//   // Serve any static files
-//   app.use(express.static(path.join(__dirname, "client/build")));
-//   // Handle React routing, return all requests to React app
-//   app.get("*", function (req, res) {
-//     res.sendFile(path.join(__dirname, "client/build", "index.html"));
-//   });
-// }
-
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
 }
@@ -47,7 +19,7 @@ if (process.env.NODE_ENV === "production") {
 const PORT = process.env.PORT || 4000;
 
 app.use(express.json());
-// app.use(cors(corsOptions));
+
 app.use(
   cors({
     origin: "http://localhost:3000",
@@ -192,6 +164,7 @@ const getPlayloadDetails = (request, response, next) => {
           response.send({ data: "invalid jwt toke" });
         } else {
           request.payLoad = payLoad;
+
           next();
         }
       });
@@ -217,7 +190,6 @@ app.put("/updateprofile", getPlayloadDetails, async (request, response) => {
   const payLoad = request.payLoad;
   const { name, mobileNo, place } = request.body;
   const { email } = payLoad;
-
   const sqlQuary = `update users set name="${name}",mobile_no=${mobileNo},place="${place}"
   where email="${email}" ;`;
   const dbResponse = await db.run(sqlQuary);
@@ -231,22 +203,18 @@ app.post("/reset-password", validateUser, async (request, response) => {
   const { id, email } = payLoad;
 
   try {
-    const token = jwtToken.sign(payLoad, "vamsi", {
-      expiresIn: "300",
-    });
+    const token = jwtToken.sign(payLoad, "vamsi");
 
     const sqlQuary = `update users set reset_token="${token}" where email="${email}";`;
     const dbResponse = await db.run(sqlQuary);
 
     if (dbResponse) {
-      console.log("hi");
       const mailOptions = {
         from: "vishnuvamsi93@gmail.com",
         to: email,
         subject: "Sending Email For password Reset",
         text: `This Link Valid For 5 MINUTES http://localhost:3000/forgot-password/${id}/${token}`,
       };
-      console.log(email);
 
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
@@ -282,7 +250,8 @@ app.post("/forgotpassword/:id/:token", async (request, response) => {
       response.status(400);
       response.send({ data: "invalid  token" });
     } else {
-      const quary = `update users set password="${password}" where id="${id}";`;
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const quary = `update users set password="${hashedPassword}" where id="${id}";`;
       const updateState = await db.run(quary);
       if (updateState) {
         response.status(200);

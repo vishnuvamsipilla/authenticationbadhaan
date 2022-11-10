@@ -29,16 +29,11 @@ const ResetPassword = () => {
 
     const response = await fetch(url, options);
     const resData = await response.json();
-    console.log(resData);
-    // if (response.status === 200) {
-    //   const { jwtToken } = resData;
-    //   Cookies.set("jwt_token", jwtToken);
-    //   history("/");
-    // } else {
-    //   const { data } = resData;
-
-    //   alert(data);
-    // }
+    if (response.status === 200) {
+      alert(resData.data);
+    } else {
+      alert(resData.data);
+    }
   };
 
   const onClickSubmit = (e) => {

@@ -32,7 +32,7 @@ const UpdateProfile = () => {
       body: JSON.stringify(inputDetails),
     };
     const response = await fetch(url, options);
-    const data = response.json();
+    const data = await response.json();
     if (response.status === 200) {
       alert("user details updated successfully");
       history("/");
@@ -57,7 +57,7 @@ const UpdateProfile = () => {
 
   return (
     <div className="register-container">
-      <h1>Sign Up</h1>
+      <h1>Update Profile</h1>
       <form onSubmit={onClickSubmit} className="form-container">
         <div className="input-container">
           <label htmlFor="name" className="label">

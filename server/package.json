@@ -22,5 +22,13 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vishnuvamsipilla/mernnsvv.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vishnuvamsipilla/mernnsvv/issues"
+  },
+  "homepage": "https://github.com/vishnuvamsipilla/mernnsvv#readme",
   "description": ""
 }
